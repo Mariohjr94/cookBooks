@@ -48,6 +48,8 @@ router.post("/login", async (req, res, next) => {
       return res.status(401).send("Invalid login credentials.");
     }
 
+    console.log("JWT_SECRET is:", process.env.JWT_SECRET);
+
     // Create a token with the instructor id
     const token = jwt.sign({ id: admin.id }, process.env.JWT_SECRET);
 

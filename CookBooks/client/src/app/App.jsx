@@ -1,18 +1,19 @@
-import './App.css'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AuthWrapper from "./components/AuthWrapper";
-import Login from "./pages/Login";
-import Home from "./pages/Home";
-import RecipesDetails from "./pages/RecipesDetails";
-import RecipeForm from "./pages/RecipeForm";
+import AuthWrapper from "../components/AuthWrapper";
+import Navbar from "../components/NavBar";
+import AuthForm from "../pages/AuthForm";
+import Home from "../pages/Home";
+import RecipesDetails from "../pages/RecipeDetails";
+import RecipeForm from "../pages/RecipeForm";
 
 
 function App() {
   return (
-    <Router>
+    <>
+      <Navbar />
       <Routes>
         {/* Public route: Login */}
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<AuthForm />} />
 
         {/* Protected routes: Wrap with AuthWrapper */}
         <Route element={<AuthWrapper />}>
@@ -21,7 +22,8 @@ function App() {
           <Route path="/add-recipe" element={<RecipeForm/>} />
         </Route>
       </Routes>
-    </Router>
+    </>
+     
   )
 }
 

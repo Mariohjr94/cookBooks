@@ -6,7 +6,7 @@ import {api} from "./api"
 
 
 
- const store = configureStore({
+const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,  // API slice
     auth: authReducer,  // Authentication slice
