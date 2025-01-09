@@ -15,28 +15,28 @@ const MasonryLayout = ({ recipes }) => {
       className="flex gap-4"
       columnClassName="masonry-column"
     >
-      {recipes.map((item, index) => (
+      {recipes.map((recipe, index) => (
         <div key={index} className="break-inside-avoid p-2 bg-white shadow-lg rounded">
-          {item.type === "image" ? (
+          {recipe.file_type === "image" ? (
             <img
-              src={item.src}
-              alt={item.alt}
+              src={recipe.image }
+              alt={recipe.title}
               className="w-full h-auto rounded"
             />
           ) : (
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col recipes-center">
               <embed
-                src={item.src}
+                src={recipe.image}
                 type="application/pdf"
                 className="w-full h-48 rounded"
               />
               <a
-                href={item.src}
+                href={recipe.title}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 underline mt-2"
               >
-                Open PDF
+                {recipe.title}
               </a>
             </div>
           )}

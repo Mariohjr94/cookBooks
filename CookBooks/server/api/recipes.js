@@ -2,15 +2,23 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 const multer = require("multer");
+const upload = multer();
 const authenticateToken = require("../middleware/authenticateToken");
-
-const upload = multer(); // For handling file uploads
 
 // Get all recipes (protected)
 router.get("/", authenticateToken, async (req, res, next) => {
   try {
     const { rows: recipes } = await db.query("SELECT * FROM recipe");
-    res.json(recipes);
+
+    // Convert binary image data to Base64 for rendering on the frontend
+    const updatedRecipes = recipes.map((recipe) => {
+      if (recipe.image) {
+        recipe.image = `data:image/jpeg;base64,${Buffer.from(recipe.image).toString("base64")}`;
+      }
+      return recipe;
+    });
+
+    res.json(updatedRecipes);
   } catch (error) {
     next(error);
   }
@@ -60,15 +68,10 @@ router.post("/", authenticateToken, upload.single("file"), async (req, res, next
 
     const fileType = req.file.mimetype.startsWith("image/") ? "image" : "pdf";
 
-    // Validate file size
-    if (req.file.size > 10 * 1024 * 1024) {
-      return res.status(400).send({ error: "File size exceeds 10MB limit." });
-    }
-
-    // Save recipe metadata to the database
+    // Insert the file into the database (as a buffer)
     const { rows: [recipe] } = await db.query(
-      "INSERT INTO recipe (title, file_path, file_type, category_id) VALUES ($1, $2, $3, $4) RETURNING *",
-      [title, `uploads/${req.file.originalname}`, fileType, category_id]
+      "INSERT INTO recipe (title, image, file_type, category_id) VALUES ($1, $2, $3, $4) RETURNING *",
+      [title, req.file.buffer, fileType, category_id]
     );
 
     res.status(201).send(recipe);

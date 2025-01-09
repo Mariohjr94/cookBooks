@@ -5,9 +5,19 @@ import AuthForm from "../pages/AuthForm";
 import Home from "../pages/Home";
 import RecipesDetails from "../pages/RecipeDetails";
 import RecipeForm from "../pages/RecipeForm";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { fetchCategories } from "../features/categories/categorySlice";
 
 
 function App() {
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
   return (
     <>
       <Navbar />
@@ -23,7 +33,6 @@ function App() {
         </Route>
       </Routes>
     </>
-     
   )
 }
 
