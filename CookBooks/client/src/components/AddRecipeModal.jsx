@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import axiosInstance from '../app/axiosInstancs'; 
 
-const AddRecipeModal = ({ open, handleClose, categories }) => {
+const AddRecipeModal = ({ open, handleClose, categories, fetchRecipes }) => {
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -40,7 +40,8 @@ const AddRecipeModal = ({ open, handleClose, categories }) => {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log("Recipe uploaded successfully:", response.data);
+     // Trigger a re-fetch of recipes
+    fetchRecipes();
     handleClose(); // Close the modal or perform additional actions
   } catch (error) {
     console.error("Error uploading recipe:", error.response?.data || error.message);
