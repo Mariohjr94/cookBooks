@@ -1,49 +1,64 @@
 import React from "react";
-import Masonry from "react-masonry-css";
+import { Masonry } from "@mui/lab";
+import { Box, Typography, Modal } from "@mui/material";
 
-const MasonryLayout = ({ recipes }) => {
-  const breakpoints = {
-    default: 4, // Default number of columns
-    1100: 3, // 3 columns for screen width < 1100px
-    768: 2,  // 2 columns for screen width < 768px
-    500: 1,  // 1 column for screen width < 500px
-  };
+const MasonryLayout = ({ recipes, onRecipeClick }) => {
 
   return (
     <Masonry
-      breakpointCols={breakpoints}
-      className="flex gap-4"
-      columnClassName="masonry-column"
+      columns={{ xs: 2, sm: 3, md: 3, lg: 4 }} 
+      spacing={2} 
     >
+
       {recipes.map((recipe, index) => (
-        <div key={index} className="break-inside-avoid p-2 bg-white shadow-lg rounded">
-          {recipe.file_type === "image" ? (
-            <img
-              src={recipe.image }
-              alt={recipe.title}
-              className="w-full h-auto rounded"
-            />
-          ) : (
-            <div className="flex flex-col recipes-center">
-              <embed
+          <Box
+            key={index}
+            sx={{
+              borderRadius: 0,
+              overflow: "hidden",
+              boxShadow: 1,
+              bgcolor: "background.paper",
+              ":hover": { transform: "scale(1.02)", transition: "0.3s" },
+            }}
+            onClick={() => onRecipeClick(recipe)}
+          >
+            <Typography
+              variant="subtitle1"
+              component="p"
+              sx={{ textAlign: "left", p: 1, 
+              fontSize: {
+                xs: "0.9rem", // Smaller font size for extra small devices
+                sm: "1rem", // Slightly larger font size for small devices
+                md: "1.25rem", // Default font size for medium devices and up
+              }}}
+            >
+              {recipe.title}
+            </Typography>
+            {recipe.image ? (
+              <img
                 src={recipe.image}
-                type="application/pdf"
-                className="w-full h-48 rounded"
+                alt={recipe.title}
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  display: "block",
+                }}
               />
-              <a
-                href={recipe.title}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 underline mt-2"
-              >
-                {recipe.title}
-              </a>
-            </div>
-          )}
-        </div>
-      ))}
-    </Masonry>
-  );
-};
+            ) : (
+              <embed
+                src={recipe.file_path}
+                type="application/pdf"
+                style={{
+                  width: "100%",
+                  height: 200,
+                  display: "block",
+                }}
+              />
+            )}
+          </Box>
+        ))}
+      </Masonry>
+    );
+  };
 
 export default MasonryLayout;

@@ -59,19 +59,17 @@ router.get("/search", authenticateToken, async (req, res) => {
 // Upload a new recipe (protected)
 router.post("/", authenticateToken, upload.single("file"), async (req, res, next) => {
   try {
-    const { title, category_id } = req.body;
+    const { title, category_id, description } = req.body;
 
     // Validate required fields
     if (!title || !req.file || !category_id) {
       return res.status(400).send({ error: "Missing required fields" });
     }
 
-    const fileType = req.file.mimetype.startsWith("image/") ? "image" : "pdf";
-
     // Insert the file into the database (as a buffer)
     const { rows: [recipe] } = await db.query(
-      "INSERT INTO recipe (title, image, file_type, category_id) VALUES ($1, $2, $3, $4) RETURNING *",
-      [title, req.file.buffer, fileType, category_id]
+      "INSERT INTO recipe (title, image, description, category_id) VALUES ($1, $2, $3, $4) RETURNING *",
+      [title, req.file.buffer, description, category_id]
     );
 
     res.status(201).send(recipe);
@@ -80,30 +78,46 @@ router.post("/", authenticateToken, upload.single("file"), async (req, res, next
   }
 });
 
-// Update recipe metadata (protected)
-router.put("/:id", authenticateToken, async (req, res, next) => {
+
+// Update an existing recipe
+router.put("/:id", authenticateToken, upload.single("file"), async (req, res, next) => {
   try {
-    const { title, category_id } = req.body;
+    const { title, category_id, description } = req.body;
+
+    // Validate required fields
+    if (!title || !category_id) {
+      return res.status(400).send({ error: "Title and category are required." });
+    }
 
     const query = `
       UPDATE recipe
-      SET title = $1, category_id = $2
-      WHERE id = $3
+      SET title = $1, category_id = $2, 
+          image = COALESCE($3, image), 
+          description = $4
+      WHERE id = $5
       RETURNING *`;
 
-    const values = [title, category_id, req.params.id];
+    const values = [
+      title,
+      category_id,
+      req.file ? req.file.buffer : null,
+      description,
+      req.params.id,
+    ];
 
     const { rows: [recipe] } = await db.query(query, values);
 
     if (!recipe) {
-      return res.status(404).send("Recipe not found.");
+      return res.status(404).send({ error: "Recipe not found." });
     }
 
-    res.send(recipe);
+    res.status(200).send(recipe);
   } catch (error) {
     next(error);
   }
 });
+
+
 
 // Delete a recipe by ID (protected)
 router.delete("/:id", authenticateToken, async (req, res, next) => {

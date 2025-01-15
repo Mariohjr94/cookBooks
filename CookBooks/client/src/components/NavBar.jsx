@@ -28,14 +28,14 @@ const Navbar = () => {
     >
       <Toolbar>
         {/* Menu Icon for mobile */}
-        <IconButton
+        {/* <IconButton
           edge="start"
           color="inherit"
           aria-label="menu"
           sx={{ mr: 2 }}
         >
           <MenuIcon />
-        </IconButton>
+        </IconButton> */}
 
         {/* Logo or Title */}
         <Typography

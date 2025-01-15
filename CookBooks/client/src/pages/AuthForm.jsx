@@ -125,7 +125,7 @@ function AuthForm() {
           <Button
             type="submit"
             variant="contained"
-            color="primary"
+            color="secondary"
             fullWidth
             disabled={loading}
             sx={{ marginTop: 2 }}
@@ -140,6 +140,7 @@ function AuthForm() {
             {oppositeAuthCopy}{" "}
             <Button
               variant="text"
+              color="error"
               onClick={() => setIsLogin(!isLogin)}
               sx={{ textTransform: "none" }}
             >

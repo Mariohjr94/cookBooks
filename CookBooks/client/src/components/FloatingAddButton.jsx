@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 const FloatingAddButton = ({ onClick }) => {
   return (
     <Fab 
-      color="primary" 
+      color="error" 
       aria-label="add" 
       style={{
         position: 'fixed',

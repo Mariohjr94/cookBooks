@@ -1,72 +1,94 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
   Modal,
-  Select,
-  MenuItem,
   TextField,
   Typography,
-  FormControl,
-  InputLabel
-} from '@mui/material';
-import axiosInstance from '../app/axiosInstancs'; 
+  Select,
+  MenuItem,
+} from "@mui/material";
+import axiosInstance from "../app/axiosInstancs";
 
-const AddRecipeModal = ({ open, handleClose, categories, fetchRecipes }) => {
+const AddRecipeModal = ({ open, handleClose, categories, fetchRecipes, recipe }) => {
   const [file, setFile] = useState(null);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+
+  // Populate form fields when editing
+  useEffect(() => {
+    if (recipe) {
+      setTitle(recipe.title || "");
+      setDescription(recipe.description || "");
+      setCategory(recipe.category_id || "");
+      setFile(null); // Reset file input
+    } else {
+      // Clear fields when adding a new recipe
+      setTitle("");
+      setDescription("");
+      setCategory("");
+      setFile(null);
+    }
+  }, [recipe]);
 
   const handleFileChange = (event) => {
-    const uploadedFile = event.target.files[0];
-    if (uploadedFile) {
-      setFile(uploadedFile);
-    }
+    setFile(event.target.files[0]);
   };
 
   const handleSubmit = async (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  const formData = new FormData();
- formData.append("title", title);
-  formData.append("description", description);
-  formData.append("file", file); // Use the file from state
-  formData.append("category_id", selectedCategory);
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("category_id", category);
 
-  try {
-    const response = await axiosInstance.post("/api/recipes", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-     // Trigger a re-fetch of recipes
-    fetchRecipes();
-    handleClose(); // Close the modal or perform additional actions
-  } catch (error) {
-    console.error("Error uploading recipe:", error.response?.data || error.message);
-  }
-};
+    if (file) {
+      formData.append("file", file);
+    }
+
+    try {
+      if (recipe) {
+        // Update an existing recipe
+        await axiosInstance.put(`/api/recipes/${recipe.id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        console.log("Recipe updated successfully");
+      } else {
+        // Add a new recipe
+        await axiosInstance.post("/api/recipes", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        console.log("Recipe created successfully");
+      }
+      fetchRecipes(); // Refresh the recipe list
+      handleClose(); // Close the modal
+    } catch (error) {
+      console.error("Error submitting recipe:", error.response?.data || error.message);
+    }
+  };
 
   return (
     <Modal open={open} onClose={handleClose}>
       <Box
         sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          bgcolor: 'background.paper',
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          bgcolor: "background.paper",
           boxShadow: 24,
-          p: 4,
           borderRadius: 2,
-          width: 400,
+          p: 4,
+          width: "90%",
+          maxWidth: "600px",
         }}
       >
+        <Typography variant="h6" gutterBottom>
+          {recipe ? "Edit Recipe" : "Add Recipe"}
+        </Typography>
         <form onSubmit={handleSubmit}>
-          <Typography variant="h6" gutterBottom>
-            Add Recipe
-          </Typography>
           <TextField
             label="Title"
             name="title"
@@ -86,49 +108,50 @@ const AddRecipeModal = ({ open, handleClose, categories, fetchRecipes }) => {
             onChange={(e) => setDescription(e.target.value)}
             sx={{ mb: 2 }}
           />
-          <TextField
-            label="Category"
-            name="category_id"
-            select // Important to make it a dropdown
+          <Select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
             fullWidth
-            required
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            variant="outlined" // Ensures consistent styling
+            displayEmpty
             sx={{ mb: 2 }}
           >
-            {categories.map((category) => (
-              <MenuItem key={category.id} value={category.id}>
-                {category.name}
+            <MenuItem value="" disabled>
+              Select a category
+            </MenuItem>
+            {categories.map((cat) => (
+              <MenuItem key={cat.id} value={cat.id}>
+                {cat.name}
               </MenuItem>
             ))}
-          </TextField>
+          </Select>
           <Box
             sx={{
-              border: '2px dashed #ccc',
-              borderRadius: '8px',
+              border: "2px dashed #ccc",
+              borderRadius: "8px",
               p: 2,
-              textAlign: 'center',
-              cursor: 'pointer',
+              textAlign: "center",
+              cursor: "pointer",
               mb: 2,
             }}
-            onClick={() => document.getElementById('fileInput').click()}
+            onClick={() => document.getElementById("fileInput").click()}
           >
             {file ? (
               <Typography>{file.name}</Typography>
             ) : (
-              <Typography>Click or Drag a file here</Typography>
+              <Typography>
+                {recipe ? "Replace Image/File" : "Click or Drag a file here"}
+              </Typography>
             )}
             <input
               id="fileInput"
               type="file"
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
               onChange={handleFileChange}
               accept="image/*,application/pdf"
             />
           </Box>
           <Button type="submit" variant="contained" color="primary" fullWidth>
-            Add Recipe
+            {recipe ? "Update Recipe" : "Add Recipe"}
           </Button>
         </form>
       </Box>
