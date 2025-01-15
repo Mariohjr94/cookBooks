@@ -14,26 +14,12 @@ const MasonryLayout = ({ recipes, onRecipeClick }) => {
           <Box
             key={index}
             sx={{
-              borderRadius: 0,
               overflow: "hidden",
-              boxShadow: 1,
-              bgcolor: "background.paper",
-              ":hover": { transform: "scale(1.02)", transition: "0.3s" },
+              boxShadow: 0.75,
+              ":hover": { filter: "brightness(0.8)" },
             }}
             onClick={() => onRecipeClick(recipe)}
           >
-            <Typography
-              variant="subtitle1"
-              component="p"
-              sx={{ textAlign: "left", p: 1, 
-              fontSize: {
-                xs: "0.9rem", // Smaller font size for extra small devices
-                sm: "1rem", // Slightly larger font size for small devices
-                md: "1.25rem", // Default font size for medium devices and up
-              }}}
-            >
-              {recipe.title}
-            </Typography>
             {recipe.image ? (
               <img
                 src={recipe.image}
@@ -42,8 +28,12 @@ const MasonryLayout = ({ recipes, onRecipeClick }) => {
                   width: "100%",
                   height: "auto",
                   display: "block",
-                }}
+                  objectFit: "cover",
+                  borderRadius: 10,
+                }
+              }  
               />
+              
             ) : (
               <embed
                 src={recipe.file_path}
@@ -55,6 +45,21 @@ const MasonryLayout = ({ recipes, onRecipeClick }) => {
                 }}
               />
             )}
+            <Box>
+                <Typography
+              variant="subtitle1"
+              component="p"
+              sx={{ textAlign: "left", p: 1, 
+              fontSize: {
+                xs: "0.9rem", // Smaller font size for extra small devices
+                sm: "1rem", // Slightly larger font size for small devices
+                md: "1rem", // Default font size for medium devices and up
+                ":hover": { textDecoration: "underline" },
+              }}}
+            >
+              {recipe.title}
+            </Typography>
+            </Box>
           </Box>
         ))}
       </Masonry>

@@ -3,15 +3,17 @@ import MasonryLayout from "../components/MasonryLayout";
 import axiosInstance from "../app/axiosInstancs";
 import AddRecipeModal from "../components/AddRecipeModal";
 import RecipeDetailModal from "../components/RecipeDetailModal";
+import CategoryButtons from "../components/CategoryButtons"; 
 import FloatingAddButton from "../components/FloatingAddButton";
 import { useSelector } from "react-redux";
-import { TextField, Box } from "@mui/material";
+import { TextField, Box, Button } from "@mui/material";
 
 const Home = () => {
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
@@ -62,18 +64,29 @@ const Home = () => {
     setRecipes((prevRecipes) => prevRecipes.filter((recipe) => recipe.id !== id));
   };
 
+  // Filter recipes when a category is clicked
+  const handleCategoryClick = (categoryId) => {
+    if (categoryId === null) {
+      setFilteredRecipes(recipes); // Show all recipes if "All" is selected
+    } else {
+      const filtered = recipes.filter(recipe => recipe.category_id === categoryId);
+      setFilteredRecipes(filtered);
+    }
+    setSelectedCategory(categoryId);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1 p-4 bg-gray-100">
          {/* Search Bar */}
         <Box sx={{ 
-          mb: 4,
+          mb: 2,
           display: "flex",
           justifyContent: "center", 
           padding: {
-            xs: "1rem",  // Small padding on extra-small devices
-            sm: "2rem", // Medium padding on small devices
-            md: "3rem", // Larger padding on medium devices and above
+            xs: "1rem",  
+            sm: "2rem", 
+            md: "3rem", 
           },
         }}>
           <TextField
@@ -83,16 +96,54 @@ const Home = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             sx={{
-                width: "70%", 
-                minWidth: "300px", 
-                bgcolor: "#FAF9F6",
-                borderRadius: 1,
-            }}
+                width: {
+                  xs: "90%", // Width for extra-small screens
+                  sm: "80%", // Width for small screens
+                  md: "60%", // Width for medium screens
+                  lg: "50%", // Width for large screens
+                },
+                bgcolor: "white", // Background color for better visibility
+                borderRadius: 1, // Slightly rounded corners
+                boxShadow: "0 2px 5px rgba(0,0,0,0.1)", // Subtle shadow for better aesthetics
+                "& .MuiOutlinedInput-root": {
+                  "&:hover fieldset": {
+                  },
+                  "&.Mui-focused fieldset": {
+                  },
+                },
+              }}
           />
         </Box>
-        <MasonryLayout 
-          onRecipeClick={handleRecipeClick} 
-          recipes={filteredRecipes}/>
+        <Box
+           sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-start",
+         
+        }}>
+          <CategoryButtons
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategoryClick={handleCategoryClick}/>
+        </Box>
+         <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-start",
+          padding: {
+            xs: "1rem",
+            sm: "2rem",
+          },
+          maxWidth: "1200px",
+          margin: "0 auto",
+        }}
+      >
+        <MasonryLayout
+          onRecipeClick={handleRecipeClick}
+          recipes={filteredRecipes}
+        />
+      </Box>
         <AddRecipeModal 
           open={isModalOpen} 
           handleClose={() => {

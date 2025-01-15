@@ -37,7 +37,7 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'Roboto, Arial, sans-serif',
+    fontFamily: 'Roboto Mono, Arial, sans-serif',
     h1: { fontWeight: 700, fontSize: '2.5rem', color: '#333333' },
     h2: { fontWeight: 700, fontSize: '2rem', color: '#333333' },
     h3: { fontWeight: 600, fontSize: '1.75rem', color: '#333333' },

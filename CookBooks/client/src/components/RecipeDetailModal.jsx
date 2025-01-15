@@ -64,7 +64,7 @@ const RecipeDetailModal = ({ open, recipe, onClose, onDelete, onEdit }) => {
           </Button>
            <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             onClick={() => onEdit(recipe)} // Trigger the onEdit callback
             sx={{ flex: 1, mx: 1 }}
           >

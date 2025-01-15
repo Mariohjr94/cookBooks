@@ -4,7 +4,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
+import BookIcon from '@mui/icons-material/Book';
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 
@@ -28,33 +28,38 @@ const Navbar = () => {
     >
       <Toolbar>
         {/* Menu Icon for mobile */}
-        {/* <IconButton
+        <IconButton
           edge="start"
           color="inherit"
           aria-label="menu"
-          sx={{ mr: 2 }}
+          //sx={{ mr: 2 }}
         >
-          <MenuIcon />
-        </IconButton> */}
+          <BookIcon />
+        </IconButton>
 
         {/* Logo or Title */}
         <Typography
           variant="h6"
           component="div"
-          sx={{ flexGrow: 1 }}
+          sx={{ flexGrow: 1, }}
           onClick={() => navigate("/")}
-          style={{ cursor: "pointer" }}
+          style={{ cursor: "pointer", fontWeight: "700" }}
         >
-          CookBooks
+          Cookbooks
         </Typography>
 
         {/* Conditional Login/Logout */}
         {localStorage.getItem("token") ? (
-          <Button color="inherit" onClick={handleLogout}>
+          <Button 
+            color="inherit" 
+            onClick={handleLogout}>
             Logout
           </Button>
         ) : (
-          <Button color="inherit" onClick={() => navigate("/login")}>
+          <Button 
+            color="inherit" 
+            onClick={() => navigate("/login")}
+          >
             Login
           </Button>
         )}
