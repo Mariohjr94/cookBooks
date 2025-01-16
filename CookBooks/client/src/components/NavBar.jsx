@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -7,10 +7,12 @@ import IconButton from "@mui/material/IconButton";
 import BookIcon from '@mui/icons-material/Book';
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const theme = useTheme(); // Access the theme
+  const theme = useTheme();
+  const user = useSelector((state) => state.auth.user);
 
   const handleLogout = () => {
     localStorage.removeItem("token"); // Clear the token
@@ -21,7 +23,7 @@ const Navbar = () => {
     <AppBar
       position="static"
       sx={{
-        backgroundColor: theme.palette.secondary.main, // Use secondary.main for background
+        backgroundColor: theme.palette.secondary.main, // Use secondary.main for backgroundxq
         color: theme.palette.secondary.contrastText, // Use secondary.contrastText for text
         boxShadow: "none", // Optional: Remove shadow for a flat look
       }}
@@ -47,7 +49,6 @@ const Navbar = () => {
         >
           Cookbooks
         </Typography>
-
         {/* Conditional Login/Logout */}
         {localStorage.getItem("token") ? (
           <Button 

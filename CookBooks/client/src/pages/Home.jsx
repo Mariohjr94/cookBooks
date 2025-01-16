@@ -6,19 +6,26 @@ import RecipeDetailModal from "../components/RecipeDetailModal";
 import CategoryButtons from "../components/CategoryButtons"; 
 import FloatingAddButton from "../components/FloatingAddButton";
 import { useSelector } from "react-redux";
-import { TextField, Box, Button } from "@mui/material";
+import { TextField, Box, Button, Avatar, Tab, Tabs } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import EditProfileModal from "../components/EditProfileModal";
+import AvatarSection from "../components/AvatarSection";
 
 const Home = () => {
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [recipeCount, setRecipeCount] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
   const [searchQuery, setSearchQuery] = useState("");
   const categories = useSelector((state) => state.categories.categories);
+
+  const user = useSelector((state) => state.auth.user);
+  console.log(user);
   
 // Fetch images and PDFs
   const fetchRecipes = async () => {
@@ -26,6 +33,7 @@ const Home = () => {
       const response = await axiosInstance.get("api/recipes");
       console.log(response.data);
       setRecipes(response.data);
+      setRecipeCount(response.data.length)
     } catch (error) {
       console.error("Error fetching recipes:", error.response?.data || error);
     }
@@ -76,8 +84,12 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-1 p-4 bg-gray-100">
+    <Box>
+      {/* Avatar */}
+      <AvatarSection 
+        user={user}
+        recipeCount={recipeCount}
+        />
          {/* Search Bar */}
         <Box sx={{ 
           mb: 2,
@@ -115,18 +127,17 @@ const Home = () => {
           />
         </Box>
         <Box
-           sx={{
+          sx={{
           display: "flex",
           justifyContent: "center",
           alignItems: "flex-start",
-         
         }}>
           <CategoryButtons
             categories={categories}
             selectedCategory={selectedCategory}
             onCategoryClick={handleCategoryClick}/>
         </Box>
-         <Box
+        <Box
         sx={{
           display: "flex",
           justifyContent: "center",
@@ -162,8 +173,7 @@ const Home = () => {
           onEdit={handleEdit}
         />
         <FloatingAddButton onClick={handleOpenModal} />
-      </main>
-    </div>
+    </Box>
   );
 };
 

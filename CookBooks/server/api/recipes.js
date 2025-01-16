@@ -8,7 +8,8 @@ const authenticateToken = require("../middleware/authenticateToken");
 // Get all recipes (protected)
 router.get("/", authenticateToken, async (req, res, next) => {
   try {
-    const { rows: recipes } = await db.query("SELECT * FROM recipe");
+    const user_id = req.user.id; 
+   const { rows: recipes } = await db.query("SELECT * FROM recipe WHERE user_id = $1", [user_id]);
 
     // Convert binary image data to Base64 for rendering on the frontend
     const updatedRecipes = recipes.map((recipe) => {
@@ -24,15 +25,16 @@ router.get("/", authenticateToken, async (req, res, next) => {
   }
 });
 
-// Get a recipe by ID (protected)
+// Get a specific recipe by ID for the authenticated user
 router.get("/:id", authenticateToken, async (req, res, next) => {
   try {
+    const user_id = req.user.id;
     const {
       rows: [recipe],
-    } = await db.query("SELECT * FROM recipe WHERE id = $1", [req.params.id]);
+    } = await db.query("SELECT * FROM recipe WHERE id = $1 AND user_id = $2", [req.params.id, user_id]);
 
     if (!recipe) {
-      return res.status(404).send("Recipe not found.");
+      return res.status(404).send("Recipe not found or not authorized.");
     }
 
     res.send(recipe);
@@ -45,9 +47,10 @@ router.get("/:id", authenticateToken, async (req, res, next) => {
 router.get("/search", authenticateToken, async (req, res) => {
   const searchTerm = req.query.query; // Retrieve the query parameter
   try {
+    const user_id = req.user.id;
     const result = await db.query(
-      "SELECT * FROM recipe WHERE title ILIKE $1",
-      [`%${searchTerm}%`]
+      "SELECT * FROM recipe WHERE title ILIKE $1 AND user_id = $2",
+      [`%${searchTerm}%`, user_id]
     );
     res.json(result.rows);
   } catch (error) {
@@ -60,16 +63,17 @@ router.get("/search", authenticateToken, async (req, res) => {
 router.post("/", authenticateToken, upload.single("file"), async (req, res, next) => {
   try {
     const { title, category_id, description } = req.body;
+    const user_id = req.user.id;
 
     // Validate required fields
-    if (!title || !req.file || !category_id) {
+    if (!title || !req.file || !category_id || !user_id) {
       return res.status(400).send({ error: "Missing required fields" });
     }
 
     // Insert the file into the database (as a buffer)
     const { rows: [recipe] } = await db.query(
-      "INSERT INTO recipe (title, image, description, category_id) VALUES ($1, $2, $3, $4) RETURNING *",
-      [title, req.file.buffer, description, category_id]
+      "INSERT INTO recipe (title, image, description, category_id, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [title, req.file.buffer, description, category_id, user_id]
     );
 
     res.status(201).send(recipe);
@@ -83,6 +87,7 @@ router.post("/", authenticateToken, upload.single("file"), async (req, res, next
 router.put("/:id", authenticateToken, upload.single("file"), async (req, res, next) => {
   try {
     const { title, category_id, description } = req.body;
+    const user_id = req.user.id;
 
     // Validate required fields
     if (!title || !category_id) {
@@ -94,7 +99,8 @@ router.put("/:id", authenticateToken, upload.single("file"), async (req, res, ne
       SET title = $1, category_id = $2, 
           image = COALESCE($3, image), 
           description = $4
-      WHERE id = $5
+      WHERE id = $5 AND user_id = $6 
+
       RETURNING *`;
 
     const values = [
@@ -103,6 +109,7 @@ router.put("/:id", authenticateToken, upload.single("file"), async (req, res, ne
       req.file ? req.file.buffer : null,
       description,
       req.params.id,
+      user_id,
     ];
 
     const { rows: [recipe] } = await db.query(query, values);
@@ -122,9 +129,12 @@ router.put("/:id", authenticateToken, upload.single("file"), async (req, res, ne
 // Delete a recipe by ID (protected)
 router.delete("/:id", authenticateToken, async (req, res, next) => {
   try {
+    const user_id = req.user.id;
     const {
       rows: [recipe],
-    } = await db.query("DELETE FROM recipe WHERE id = $1 RETURNING *", [req.params.id]);
+    } = await db.query("DELETE FROM recipe WHERE id = $1 AND user_id = $2 RETURNING *",
+      [req.params.id, user_id]
+    );
 
     if (!recipe) {
       return res.status(404).send("Recipe not found.");

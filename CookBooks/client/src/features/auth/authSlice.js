@@ -43,6 +43,14 @@ const authApi = api.injectEndpoints({
       queryFn: () => ({ data: {} }),
       invalidatesTags: ['Me'], // Invalidate to clear `me` data on logout
     }),
+    updateProfile: builder.mutation({
+      query: (profileData) => ({
+        url: '/auth/me',
+        method: 'PUT',
+        body: profileData,
+      }),
+      invalidatesTags: ['Me'], // Invalidates cache to ensure fresh data
+    }),
   }),
 });
 
@@ -62,7 +70,13 @@ const authSlice = createSlice({
       state.token = null;
       window.localStorage.removeItem(TOKEN);
     },
+    updateUserProfile(state, action) {
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload };
+      }
+    },
   },
+
   extraReducers: (builder) => {
     // Listen to 'me' query and store user data after login
     builder.addMatcher(
@@ -72,15 +86,15 @@ const authSlice = createSlice({
       }
     );
     // Clear user info on logout
-  builder.addMatcher(
-    authApi.endpoints.logout.matchFulfilled,
-    (state) => {
-      state.user = null;
-      state.token = null;  
-      window.localStorage.removeItem(TOKEN);  
-      }
-    );
-  }
+    builder.addMatcher(
+      authApi.endpoints.logout.matchFulfilled,
+      (state) => {
+        state.user = null;
+        state.token = null;  
+        window.localStorage.removeItem(TOKEN);  
+        }
+      );
+    }
 });
 
 // Export RTK Query hooks
@@ -88,11 +102,12 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useMeQuery,
-  useLogoutMutation
+  useLogoutMutation,
+  useUpdateProfileMutation,
 } = authApi;
 
 // Redux actions
-export const { storeToken, clearToken } = authSlice.actions;
+export const { storeToken, clearToken, updateUserProfile } = authSlice.actions;
 
 // Export the reducer to integrate into the store
 export default authSlice.reducer;
