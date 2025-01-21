@@ -4,7 +4,7 @@
   "description": "CookBooks project",
   "main": "index.js",
   "scripts": {
-    "seed": "node server/db/seed.js",
+    "seed": "node ./server/db/seed.js",
     "dev": "concurrently \"npm run start:server\" \"npm run start:client\"",
     "start:server": "nodemon server/index.js",
     "start:client": "npm run dev --prefix client",
