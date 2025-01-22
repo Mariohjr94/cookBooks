@@ -38,6 +38,15 @@ const authApi = api.injectEndpoints({
         body: credentials,
       }),
       invalidatesTags: ['Me'], // Invalidate to refetch `me` after registration
+          onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled; // Get the response data
+          // Store the token in Redux and localStorage
+          dispatch(storeToken({ token: data.token }));
+        } catch (err) {
+          console.error('Registration failed:', err);
+        }
+      },
     }),
     logout: builder.mutation({
       queryFn: () => ({ data: {} }),
