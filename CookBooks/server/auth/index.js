@@ -19,7 +19,6 @@ router.post("/register", upload.single("avatar"), async (req, res) => {
     // Normalize the username
     username = username.trim().toLowerCase();
 
-  try {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
