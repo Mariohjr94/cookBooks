@@ -55,18 +55,18 @@ router.post("/login", async (req, res, next) => {
       [req.body.username]
     );
 
-    if (!admin) {
-      return res.status(401).send("Invalid login credentials.");
+      if (!admin) {
+      return res.status(401).json({ message: "Invalid login credentials." });
     }
-
-    // Compare the provided password with the stored hashed password
+  
+  // Compare the provided password with the stored hashed password
     const validPassword = await bcrypt.compare(
       req.body.password,
       admin.password
     );
 
     if (!validPassword) {
-      return res.status(401).send("Invalid login credentials.");
+      return res.status(401).json({ message: "Invalid login credentials." });
     }
 
     console.log("JWT_SECRET is:", process.env.JWT_SECRET);
