@@ -36,6 +36,12 @@ CookBooks is a personal recipe management application built with the MERN stack 
 - **Token-Based Authentication**: JWT is used to manage authentication and ensure secure access.
 - **Logout**: Users can log out, which clears their session.
 
+### Test User
+For employers or testers, a test user has been created to explore the application without registering. Use the following credentials to log in:
+
+- **Username**: `TestUser`
+- **Password**: `12345`
+
 ## Technologies Used
 
 ### Frontend
@@ -50,19 +56,5 @@ CookBooks is a personal recipe management application built with the MERN stack 
 - **JWT**: Used for secure authentication.
 
 ### Deployment
-- **Frontend**: Deployed on Netlify.
-- **Backend**: Deployed on Heroku.
-
-## Installation and Setup
-
-### Prerequisites
-- Node.js
-- PostgreSQL
-- NPM
-
-### Backend Setup
-1. Clone the repository.
-2. Navigate to the `server` directory.
-3. Install dependencies:
-   ```bash
-   npm install
+- **Frontend**: Deployed on Render.
+- **Backend**: Deployed on Render.
