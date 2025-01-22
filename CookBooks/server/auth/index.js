@@ -16,9 +16,6 @@ router.post("/register", upload.single("avatar"), async (req, res) => {
   }
 
   try {
-    // Normalize the username
-    username = username.trim().toLowerCase();
-
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -51,13 +48,11 @@ router.post("/register", upload.single("avatar"), async (req, res) => {
 // Login to an existing admin account
 router.post("/login", async (req, res, next) => {
   try {
-    const username = req.body.username.trim().toLowerCase();
-
     const {
       rows: [admin],
     } = await db.query(
       "SELECT * FROM admin WHERE username = $1",
-      [username]
+      [req.body.username]
     );
 
     if (!admin) {
