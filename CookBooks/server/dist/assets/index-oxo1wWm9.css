@@ -1,0 +1,1 @@
+@tailwind base;@tailwind components;@tailwind utilities;.category-buttons-container{display:flex;overflow-x:auto;padding:1rem;gap:.5rem;white-space:nowrap;scroll-behavior:smooth}.category-buttons-container::-webkit-scrollbar{display:none}
