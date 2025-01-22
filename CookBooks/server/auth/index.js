@@ -52,7 +52,7 @@ router.post("/login", async (req, res, next) => {
       rows: [admin],
     } = await db.query(
       "SELECT * FROM admin WHERE username = $1",
-      [req.body.username]
+      [req.body.username.toLowerCase()]
     );
 
     if (!admin) {
