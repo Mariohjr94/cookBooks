@@ -1,7 +1,7 @@
 # CookBooks Application
 
 ## Overview
-CookBooks is a personal recipe management application built with the MERN stack (MongoDB, Express.js, React, Node.js). The app is designed to allow users to:
+CookBooks is a personal recipe management application built with the MERN stack (PostgreSQL, Express.js, React, Node.js). The app is designed to allow users to:
 
 - Upload recipes images or PDFs.
 - Categorize recipes for better organization.
