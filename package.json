@@ -9,7 +9,6 @@
     "start:server": "nodemon CookBooks/server/index.js",
     "start:client": "npm run dev --prefix client",
     "build": "vite build client",
-    "heroku-postbuild": "npm run build --prefix client",
     "lint": "eslint .",
     "preview": "vite preview --config client/vite.config.js"
   },
