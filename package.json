@@ -13,10 +13,6 @@
     "lint": "eslint .",
     "preview": "vite preview --config client/vite.config.js"
   },
-  "engines": {
-    "node": "18.x",
-    "npm": "9.x"
-  },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",

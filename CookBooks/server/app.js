@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const helmet = require("helmet")
 const cors = require("cors");
 
-require('dotenv').config();
+require("dotenv").config({ path: "./CookBooks/server/.env" });
 
 app.use(helmet());
 app.use(cors());
