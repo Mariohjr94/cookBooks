@@ -8,6 +8,7 @@
     "dev": "concurrently \"npm run start:server\" \"npm run start:client\"",
     "start:server": "nodemon CookBooks/server/index.js",
     "start:client": "npm run dev --prefix client",
+    "start": "node CookBooks/server/index.js",
     "build": "npm run build --prefix CookBooks/client",
     "heroku-postbuild": "npm install --prefix CookBooks/client && npm run build --prefix CookBooks/client",
     "lint": "eslint .",
