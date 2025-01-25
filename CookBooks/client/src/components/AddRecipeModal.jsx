@@ -40,6 +40,11 @@ useEffect(() => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (!category) {
+    alert("Please select a category before submitting the form.");
+    return;
+  }
+  
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
