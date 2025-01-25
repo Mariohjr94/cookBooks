@@ -37,7 +37,7 @@ CookBooks is a personal recipe management application built with the MERN stack 
 - **Logout**: Users can log out, which clears their session.
 
 ### Test User
-For employers or testers, a test user has been created to explore the application without registering. Use the following credentials to log in:
+For employers or testers, can login to explore the application. Use the following credentials to log in:
 
 - **Username**: `sampleUser`
 - **Password**: `12345`
