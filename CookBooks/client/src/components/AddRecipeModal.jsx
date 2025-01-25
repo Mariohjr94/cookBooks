@@ -17,20 +17,21 @@ const AddRecipeModal = ({ open, handleClose, categories, fetchRecipes, recipe })
   const [category, setCategory] = useState("");
 
   // Populate form fields when editing
-  useEffect(() => {
-    if (recipe) {
-      setTitle(recipe.title || "");
-      setDescription(recipe.description || "");
-      setCategory(recipe.category_id || "");
-      setFile(null); // Reset file input
-    } else {
-      // Clear fields when adding a new recipe
-      setTitle("");
-      setDescription("");
-      setCategory("");
-      setFile(null);
-    }
-  }, [recipe]);
+useEffect(() => {
+  if (recipe) {
+    // Populate fields for editing
+    setTitle(recipe.title || "");
+    setDescription(recipe.description || "");
+    setCategory(recipe.category_id || "");
+    setFile(null); // Reset file input
+  } else if (open) {
+    // Clear fields when the modal is opened for a new recipe
+    setTitle("");
+    setDescription("");
+    setCategory("");
+    setFile(null);
+  }
+}, [recipe, open]);
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
