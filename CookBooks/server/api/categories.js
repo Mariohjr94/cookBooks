@@ -4,7 +4,7 @@ const db = require("../db");
 const authenticateToken = require("../middleware/authenticateToken");
 
 // Get all categories (protected)
-router.get("/", authenticateToken, async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     const { rows: categories } = await db.query("SELECT * FROM category");
     res.send(categories);
@@ -37,7 +37,7 @@ router.post("/", authenticateToken, async (req, res, next) => {
 });
 
 // Delete a category by ID (protected)
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", authenticateToken, async (req, res, next) => {
   try {
     const {
       rows: [category],
