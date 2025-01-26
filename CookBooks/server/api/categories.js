@@ -37,7 +37,7 @@ router.post("/", authenticateToken, async (req, res, next) => {
 });
 
 // Delete a category by ID (protected)
-router.delete("/:id", authenticateToken, async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const {
       rows: [category],

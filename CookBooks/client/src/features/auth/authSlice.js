@@ -46,7 +46,7 @@ const authApi = api.injectEndpoints({
         } catch (err) {
           console.error('Registration failed:', err);
         }
-      },
+      }, 
     }),
     logout: builder.mutation({
       queryFn: () => ({ data: {} }),
